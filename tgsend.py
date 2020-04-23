@@ -22,6 +22,7 @@ cmd > pip install ИМЯ_БИБЛИОТЕКИ
 Если при компиляции в EXE у вас не нашло модуль - добавьте с помощью аргумента --hidden-import="ИМЯ БИБЛИОТЕКИ"
 НАПРИМЕР:
 pyinstaller -y -F -w --hidden-import="ИМЯ БИБЛИОТЕКИ" "ПУТЬ/К/НАШЕМУ/ФАЙЛУ.py"
+При ошибке "Failed to execute script pyi_rth_pkgres" пишем вместо "ИМЯ БИБЛИОТЕКИ" "pkg_resources.py2_warn"
 """
 
 
