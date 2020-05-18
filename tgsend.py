@@ -77,7 +77,7 @@ def finddir(path):
                 found = os.path.join(root, name)
                 print("***Checking folder: " + found)
                 if os.path.exists(found + '\\Telegram.exe'):
-                    print("***OK Telegram Desktop hab been found")
+                    print("***OK Telegram Desktop has been found")
                     return found
                 else:
                     print("ERROR: is not an actual TG folder")
@@ -86,6 +86,7 @@ def finddir(path):
 if os.path.exists(pathusr + '\\AppData\\Roaming\\Telegram Desktop'):
     tddir = pathusr + '\\AppData\\Roaming\\Telegram Desktop\\'
     tdata_path = pathusr + '\\AppData\\Roaming\\Telegram Desktop\\tdata\\'
+    user = pathusr + " " + tddir
 else:
     for i in paths:
         tddir = finddir(i)
