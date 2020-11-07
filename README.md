@@ -12,7 +12,8 @@ How to use telegram session files:
 
 1. Download the same version of official "Telegram Desktop Portable" as you get in your bot in captions of the file or try on the newest if you're lucky one (the stealer works only if versions of your received files are the same as your Telegram client).
 2. Run "Telegram.exe" 1 time until "tdata" folder appears.
-3. Replace this "tdata" folder and all the files with your stealed folder and files instead.
-4. Go back and run "Telegram.exe".
+3. Unzip your "tdata.zip" and find in there "tdata" folder.
+4. Replace "tdata" folder in your Telegram Portable folder and all the files with your stealed folder "tdata" and files.
+5. Go back and run "Telegram.exe".
 
 Questions - Telegram @hlibchyk (English, Ukrainian, Russian, Polish).
