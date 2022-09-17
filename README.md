@@ -15,5 +15,3 @@ How to use telegram session files:
 3. Unzip your "tdata.zip" and find in there "tdata" folder.
 4. Replace "tdata" folder in your Telegram Portable folder and all the files with your stealed folder "tdata" and files.
 5. Go back and run "Telegram.exe".
-
-Questions - Telegram @hlibchyk (English, Ukrainian, Russian, Polish).
